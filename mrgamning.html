@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MR Gaming Files</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #000000; color: #ffffff; font-family: 'Arial Black', sans-serif; text-align: center; padding: 20px; }
+        .profile-container { margin-bottom: 25px; position: relative; }
+        .title { font-size: 26px; margin: 10px 0 5px 0; outline: none; }
+        .sub { color: #cccccc; font-size: 14px; margin-bottom: 30px; font-family: Arial, sans-serif; outline: none; }
+        
+        /* প্রোফাইল লোগো */
+        .profile-img { width: 130px; height: 130px; border-radius: 50%; border: 3px solid #ffcc00; box-shadow: 0 0 15px #ffcc00; object-fit: cover; cursor: pointer; background-color: #111; }
+        
+        #buttonsArea { max-width: 400px; margin: 0 auto; }
+        .btn-wrapper { position: relative; margin: 12px auto; max-width: 400px; }
+        
+        /* হলুদ বাটন */
+        .btn { display: block; background-color: #ffcc00; color: #000000; text-decoration: none; text-transform: uppercase; font-size: 15px; padding: 14px; border-radius: 12px; font-weight: bold; border: 2px solid #000000; outline: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        
+        /* ইউটিউব বাটন */
+        .yt-btn { background-color: #ff0000; color: #ffffff; display: block; text-decoration: none; text-transform: uppercase; font-size: 15px; padding: 14px; border-radius: 12px; font-weight: bold; max-width: 400px; margin: 12px auto; border: 2px solid #000000; }
+        
+        /* ❌ ডিলিট ক্রস চিহ্ন */
+        .delete-icon { display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background-color: #ff3333; color: #fff; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; font-weight: bold; cursor: pointer; line-height: 24px; text-align: center; padding: 0; z-index: 10; }
+        
+        /* 🛠️ কন্ট্রোল প্যানেল বক্স */
+        .admin-panel { background-color: #111; padding: 15px; border-radius: 12px; max-width: 400px; margin: 20px auto; border: 1px dashed #ffcc00; }
+        .admin-btn { background-color: #ff00ff; color: #fff; border: none; padding: 10px 15px; font-size: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 5px; text-transform: uppercase; }
+        .save-btn { background-color: #00ffcc; color: #000; }
+        .add-btn { background-color: #0088ff; color: #fff; display: none; }
+        
+        /* ⚠️ লাল সতর্কবার্তা বক্স */
+        .warning-box { border: 2px solid #ff3333; background-color: #1a0000; color: #ff3333; font-size: 14px; padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; font-family: Arial, sans-serif; text-transform: uppercase; box-shadow: 0 0 10px #ff3333; }
+        
+        .editing { border: 2px dashed #ff00ff !important; background-color: #222222 !important; color: #ffffff !important; }
+        #imageUpload { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <img class="profile-img" id="profilePic" src="https://via.placeholder.com/150/000000/ffffff?text=MR+Gaming" alt="Logo" onclick="triggerUpload()"/>
+        <input type="file" id="imageUpload" accept="image/*" onchange="loadLogo(event)">
+        
+        <div class="title" id="mainTitle">MR Gaming</div>
+        <div class="sub" id="mainSub">YouTube Content Creator</div>
+    </div>
+
+    <div id="buttonsArea">
+        <div class="btn-wrapper">
+            <a href="https://www.mediafire.com" target="_blank" class="btn" onclick="handleBtnClick(event)"><i class="fa-solid fa-download"></i> DOWNLOAD TOURNAMENT PANEL</a>
+            <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
+        </div>
+        <div class="btn-wrapper">
+            <a href="https://www.mediafire.com" target="_blank" class="btn" onclick="handleBtnClick(event)"><i class="fa-solid fa-download"></i> DOWNLOAD SECRET PANEL</a>
+            <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
+        </div>
+    </div>
+
+    <p style="color: #ffd700; margin-top: 30px;">FOLLOW ME</p>
+    <a href="https://youtube.com/@musa0000-n7v?si=Y7LGJjz1-jMlfT7D" target="_blank" class="yt-btn"><i class="fa-brands fa-youtube"></i> Subscribe Now YouTube</a>
+
+    <div class="admin-panel">
+        <div class="warning-box">
+            ⚠️ এডমিন ছাড়া কেউ পাসওয়ার্ড দেওয়ার চেষ্টা করবেন না ⚠️
+        </div>
+        
+        <button class="admin-btn add-btn" id="addButton" onclick="addNewButton()">➕ Add New Button</button>
+        <button class="admin-btn" id="editToggle" onclick="checkPasswordAndToggle()">✍️ TURN ON EDIT MODE</button>
+        <button class="admin-btn save-btn" id="saveButton" onclick="saveChanges()" style="display: none;">💾 SAVE CHANGES</button>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let isVerified = false;
+
+        window.onload = function() {
+            if(localStorage.getItem('logoData')) document.getElementById('profilePic').src = localStorage.getItem('logoData');
+            if(localStorage.getItem('title')) document.getElementById('mainTitle').innerText = localStorage.getItem('title');
+            if(localStorage.getItem('sub')) document.getElementById('mainSub').innerText = localStorage.getItem('sub');
+            if(localStorage.getItem('savedButtonsHTML')) {
+                document.getElementById('buttonsArea').innerHTML = localStorage.getItem('savedButtonsHTML');
+            }
+        }
+
+        // বাটন ক্লিকে ডাউনলোডের লজিক
+        function handleBtnClick(event) {
+            // যদি এডিট মোড অন থাকে, তবে লিংক ওপেন হবে না, এডিট হবে
+            if (isEditMode) {
+                event.preventDefault();
+            }
+            // এডিট মোড অফ থাকলে নরমালি লিংকে গিয়ে ডাউনলোড হবে
+        }
+
+        function triggerUpload() { 
+            if(isVerified) {
+                document.getElementById('imageUpload').click(); 
+            } else {
+                alert("❌ লোগো পরিবর্তন করতে আগে এডিট মোড অন করুন এবং পাসওয়ার্ড দিন!");
+            }
+        }
+
+        function loadLogo(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('profilePic').src = reader.result;
+                localStorage.setItem('logoData', reader.result);
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function addNewButton() {
+            if(!isVerified) return;
+            const area = document.getElementById('buttonsArea');
+            let userLink = prompt("আপনার ফাইলের ডাউনলোড লিংকটি দিন:", "https://www.mediafire.com");
+            if(!userLink) userLink = "https://www.mediafire.com";
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "btn-wrapper";
+            wrapper.innerHTML = `
+                <a href="${userLink}" target="_blank" class="btn" onclick="handleBtnClick(event)"><i class="fa-solid fa-download"></i> NEW DOWNLOAD BUTTON</a>
+                <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
+            `;
+            area.appendChild(wrapper);
+            
+            if(isEditMode) {
+                const btn = wrapper.querySelector('.btn');
+                const delIcon = wrapper.querySelector('.delete-icon');
+                btn.setAttribute('contenteditable', 'true');
+                btn.classList.add('editing');
+                delIcon.style.display = "block";
+            }
+        }
+
+        function removeThisButton(buttonElement) {
+            if(!isVerified) return;
+            if(confirm("আপনি কি নিশ্চিত যে এই ডাউনলোড বাটনটি ডিলিট করতে চান?")) {
+                buttonElement.parentElement.remove();
+            }
+        }
+
+        function checkPasswordAndToggle() {
+            if (!isVerified) {
+                let askPass = prompt("গোপন এডমিন পাসওয়ার্ডটি দিন:");
+                if (askPass === "mrgaming") {
+                    isVerified = true;
+                    document.getElementById('addButton').style.display = "inline-block";
+                    document.getElementById('saveButton').style.display = "inline-block";
+                    toggleEditMode();
+                } else {
+                    alert("❌ ভুল পাসওয়ার্ড! আপনি এই সাইটের এডমিন নন।");
+                }
+            } else {
+                toggleEditMode();
+            }
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const titleEl = document.getElementById('mainTitle');
+            const subEl = document.getElementById('mainSub');
+            const buttons = document.querySelectorAll('#buttonsArea .btn');
+            const deleteIcons = document.querySelectorAll('#buttonsArea .delete-icon');
+            const toggleBtn = document.getElementById('editToggle');
+
+            if(isEditMode) {
+                toggleBtn.innerText = "🛑 STOP EDITING";
+                toggleBtn.style.backgroundColor = "#ff3333";
+                titleEl.setAttribute('contenteditable', 'true');
+                titleEl.classList.add('editing');
+                subEl.setAttribute('contenteditable', 'true');
+                subEl.classList.add('editing');
+                buttons.forEach(btn => {
+                    btn.setAttribute('contenteditable', 'true');
+                    btn.classList.add('editing');
+                });
+                deleteIcons.forEach(icon => { icon.style.display = "block"; });
+            } else {
+                toggleBtn.innerText = "✍️ TURN ON EDIT MODE";
+                toggleBtn.style.backgroundColor = "#ff00ff";
+                titleEl.setAttribute('contenteditable', 'false');
+                titleEl.classList.remove('editing');
+                subEl.setAttribute('contenteditable', 'false');
+                subEl.classList.remove('editing');
+                buttons.forEach(btn => {
+                    btn.setAttribute('contenteditable', 'false');
+                    btn.classList.remove('editing');
+                });
+                deleteIcons.forEach(icon => { icon.style.display = "none"; });
+            }
+        }
+
+        function saveChanges() {
+            if(isEditMode) toggleEditMode();
+            localStorage.setItem('title', document.getElementById('mainTitle').innerText);
+            localStorage.setItem('sub', document.getElementById('mainSub').innerText);
+            localStorage.setItem('savedButtonsHTML', document.getElementById('buttonsArea').innerHTML);
+            
+            isVerified = false;
+            document.getElementById('addButton').style.display = "none";
+            document.getElementById('saveButton').style.display = "none";
+            
+            alert("✅ সবকিছু সফলভাবে সেভ এবং ডাউনলোড লিংক সচল হয়েছে!");
+        }
+    </script>
+
+</body>
+</html>
