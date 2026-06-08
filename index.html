@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MR Gaming Files</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase Cloud Database SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         body { 
             background-color: #050505; 
@@ -156,9 +153,20 @@
         <div class="sub" id="mainSub">YouTube Content Creator</div>
     </div>
 
-    <!-- ক্লাউড বাটন এরিয়া -->
+    <!-- বাটন এরিয়া -->
     <div id="buttonsArea">
-        <p style="color: #888;">ফাইলগুলো লোড হচ্ছে, দয়া করে অপেক্ষা করুন...</p>
+        <!-- প্রথম ফাইল (উদাহরণস্বরূপ দেওয়া, আপনি এডিট করে চেঞ্জ করতে পারবেন) -->
+        <div class="btn-wrapper">
+            <a href="https://www.mediafire.com" target="_blank" class="mediafire-card" onclick="handleBtnClick(event)">
+                <div class="mf-file-icon"><i class="fa-solid fa-file-zipper"></i></div>
+                <div class="mf-text-container">
+                    <div class="mf-file-name">MR GAMING VIP PANEL.ZIP</div>
+                    <div class="mf-file-size">File Size: 14.5 MB</div>
+                </div>
+                <div class="mf-download-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            </a>
+            <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
+        </div>
     </div>
 
     <p style="color: #ffd700; margin-top: 35px; font-size: 14px;">FOLLOW ME</p>
@@ -170,59 +178,13 @@
         <div class="warning-box">⚠️ এডমিন ছাড়া কেউ পাসওয়ার্ড দেওয়ার চেষ্টা করবেন না ⚠️</div>
         <button class="admin-btn add-btn" id="addButton" onclick="addNewButton()">➕ Add New File</button>
         <button class="admin-btn" id="editToggle" onclick="checkPasswordAndToggle()">✍️ TURN ON EDIT MODE</button>
-        <button class="admin-btn save-btn" id="saveButton" onclick="saveChanges()" style="display: none;">💾 SAVE CHANGES</button>
+        <button class="admin-btn save-btn" id="saveButton" onclick="saveChanges()" style="style: none; display: none;">💾 SAVE CHANGES</button>
     </div>
 
     <script>
-        // ওপি ক্লাউড ডাটাবেজ কনফিগারেশন (সবার জন্য অটো-সিঙ্ক)
-        const firebaseConfig = {
-            databaseURL: "https://mr-gaming-panel-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("panelData");
-
         let isEditMode = false;
         let isVerified = false;
-        let currentLogoBase64 = "https://via.placeholder.com/150/000000/ffffff?text=MR+Gaming";
-
-        // ডাটাবেজ থেকে রিয়েল-টাইম ডাটা দর্শকদের ফোনে লোড করা
-        db.on("value", (snapshot) => {
-            const data = snapshot.val();
-            if(data) {
-                if(!isEditMode) {
-                    document.getElementById('mainTitle').innerText = data.title || "MR Gaming";
-                    document.getElementById('mainSub').innerText = data.sub || "YouTube Content Creator";
-                    if(data.logo) {
-                        document.getElementById('profilePic').src = data.logo;
-                        currentLogoBase64 = data.logo;
-                    }
-                    
-                    const area = document.getElementById('buttonsArea');
-                    area.innerHTML = "";
-                    if(data.buttons) {
-                        data.buttons.forEach((btn, index) => {
-                            if(!btn) return;
-                            const wrapper = document.createElement('div');
-                            wrapper.className = "btn-wrapper";
-                            wrapper.innerHTML = `
-                                <a href="${btn.link}" target="_blank" class="mediafire-card" onclick="handleBtnClick(event)">
-                                    <div class="mf-file-icon"><i class="fa-solid fa-file-zipper"></i></div>
-                                    <div class="mf-text-container">
-                                        <div class="mf-file-name">${btn.name}</div>
-                                        <div class="mf-file-size">File Size: ${btn.size}</div>
-                                    </div>
-                                    <div class="mf-download-arrow"><i class="fa-solid fa-arrow-down"></i></div>
-                                </a>
-                                <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
-                            `;
-                            area.appendChild(wrapper);
-                        });
-                    } else {
-                        area.innerHTML = `<p style="color:#666;">কোনো ফাইল আপলোড করা নেই।</p>`;
-                    }
-                }
-            }
-        });
+        let currentLogoBase64 = "";
 
         function handleBtnClick(event) { if (isEditMode) event.preventDefault(); }
         function triggerUpload() { if(isVerified) document.getElementById('imageUpload').click(); else alert("❌ লোগো পরিবর্তন করতে এডিট মোড অন করুন!"); }
@@ -301,38 +263,47 @@
             }
         }
 
-        // মেঘের ডাটাবেজে (Cloud Database) ডেটা সেভ করা যা সাথে সাথে সকলের ফোনে আপডেট হবে
+        // নতুন ওপি সিস্টেম: অটো কোড জেনারেটর ও কপিয়ার
         function saveChanges() {
             if(isEditMode) toggleEditMode();
             
-            const btnWrappers = document.querySelectorAll('#buttonsArea .btn-wrapper');
-            const buttonsData = [];
+            // এডিট প্যানেল এবং স্ক্রিপ্ট ছাড়া ফ্রন্টএন্ড ক্লিন করা
+            document.getElementById('addButton').style.display = "none";
+            document.getElementById('saveButton').style.display = "none";
+            document.getElementById('editToggle').innerText = "✍️ TURN ON EDIT MODE";
+            document.getElementById('editToggle').style.backgroundColor = "#ff00ff";
             
-            btnWrappers.forEach(wrapper => {
-                const aTag = wrapper.querySelector('.mediafire-card');
-                const name = wrapper.querySelector('.mf-file-name').innerText;
-                const size = wrapper.querySelector('.mf-file-size').innerText.replace("File Size: ", "");
-                const link = aTag.getAttribute('href');
-                buttonsData.push({ name: name, size: size, link: link });
-            });
+            const titleEl = document.getElementById('mainTitle');
+            const subEl = document.getElementById('mainSub');
+            titleEl.removeAttribute('contenteditable'); titleEl.classList.remove('editing');
+            subEl.removeAttribute('contenteditable'); subEl.classList.remove('editing');
+            
+            const cards = document.querySelectorAll('#buttonsArea .mediafire-card');
+            const fileNames = document.querySelectorAll('#buttonsArea .mf-file-name');
+            const fileSizes = document.querySelectorAll('#buttonsArea .mf-file-size');
+            const deleteIcons = document.querySelectorAll('#buttonsArea .delete-icon');
+            
+            cards.forEach(c => c.classList.remove('editing'));
+            fileNames.forEach(n => n.removeAttribute('contenteditable'));
+            fileSizes.forEach(s => n => s.removeAttribute('contenteditable'));
+            deleteIcons.forEach(i => i.style.display = "none");
 
-            const finalData = {
-                title: document.getElementById('mainTitle').innerText,
-                sub: document.getElementById('mainSub').innerText,
-                logo: currentLogoBase64,
-                buttons: buttonsData
-            };
-
-            db.set(finalData, (error) => {
-                if(error) {
-                    alert("❌ ডাটাবেজে সেভ হতে সমস্যা হয়েছে!");
-                } else {
-                    isVerified = false;
-                    document.getElementById('addButton').style.display = "none";
-                    document.getElementById('saveButton').style.display = "none";
-                    alert("✅ ওপি মুসা ভাই! ক্লাউড ডাটাবেজে নাম ও ফাইল সফলভাবে সেভ হয়েছে। এখন সব দর্শকরা নতুন নাম দেখতে পাবে!");
-                }
-            });
+            // নতুন HTML কোড জেনারেট করা
+            const currentHTML = "<!DOCTYPE html>\n<html lang=\"en\">\n" + document.documentElement.innerHTML + "\n</html>";
+            
+            // ক্লিপবোর্ডে অটো-কপি করা
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = currentHTML;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            
+            isVerified = false;
+            alert("✅ ওপি মুসা ভাই! আপনার নতুন ফাইল ও নামসহ সম্পূর্ণ আপডেট কোডটি অটোমেটিক কপি হয়ে গেছে।\n\nএখনই গিটহাবে (GitHub) গিয়ে index.html ফাইলের আগের কোড সব কেটে দিয়ে এই নতুন কপি হওয়া কোডটি পেস্ট (Paste) করে Commit করে দিন। ব্যাস, দর্শকদের ফোনেও একদম লাইভ আপডেট হয়ে যাবে!");
+            
+            // রিলোড দিয়ে রিয়েল ভিউ দেখানো
+            window.location.reload();
         }
     </script>
 </body>
