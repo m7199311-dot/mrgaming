@@ -5,37 +5,145 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MR Gaming Files</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase Cloud Database SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { background-color: #000000; color: #ffffff; font-family: 'Arial Black', sans-serif; text-align: center; padding: 20px; }
+        body { 
+            background-color: #050505; 
+            color: #ffffff; 
+            font-family: 'Arial Black', sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            margin: 0;
+        }
         .profile-container { margin-bottom: 25px; position: relative; }
-        .title { font-size: 26px; margin: 10px 0 5px 0; outline: none; }
+        .title { font-size: 26px; margin: 10px 0 5px 0; outline: none; text-shadow: 0 0 10px rgba(255,204,0,0.3); }
         .sub { color: #cccccc; font-size: 14px; margin-bottom: 30px; font-family: Arial, sans-serif; outline: none; }
         
-        /* প্রোফাইল লোগো */
-        .profile-img { width: 130px; height: 130px; border-radius: 50%; border: 3px solid #ffcc00; box-shadow: 0 0 15px #ffcc00; object-fit: cover; cursor: pointer; background-color: #111; }
+        .profile-img { 
+            width: 130px; 
+            height: 130px; 
+            border-radius: 50%; 
+            border: 3px solid #ffcc00; 
+            box-shadow: 0 0 15px #ffcc00; 
+            object-fit: cover; 
+            cursor: pointer; 
+            background-color: #111; 
+        }
         
-        #buttonsArea { max-width: 400px; margin: 0 auto; }
-        .btn-wrapper { position: relative; margin: 12px auto; max-width: 400px; }
+        #buttonsArea { max-width: 420px; margin: 0 auto; padding: 0 10px; }
+        .btn-wrapper { position: relative; margin: 16px auto; max-width: 400px; }
         
-        /* হলুদ বাটন */
-        .btn { display: block; background-color: #ffcc00; color: #000000; text-decoration: none; text-transform: uppercase; font-size: 15px; padding: 14px; border-radius: 12px; font-weight: bold; border: 2px solid #000000; outline: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        /* 🔵 মিডিয়াফায়ার স্টাইল ওপি ডাউনলোড কার্ড */
+        .mediafire-card { 
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #0056b3 0%, #0070f3 100%);
+            color: #ffffff; 
+            text-decoration: none; 
+            padding: 12px 16px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            border: 2px solid #004b9b; 
+            outline: none; 
+            box-shadow: 0 6px 12px rgba(0, 112, 243, 0.3); 
+            text-align: left;
+            transition: transform 0.2s;
+        }
+        .mediafire-card:active { transform: scale(0.98); }
         
-        /* ইউটিউব বাটন */
-        .yt-btn { background-color: #ff0000; color: #ffffff; display: block; text-decoration: none; text-transform: uppercase; font-size: 15px; padding: 14px; border-radius: 12px; font-weight: bold; max-width: 400px; margin: 12px auto; border: 2px solid #000000; }
+        .mf-file-icon { font-size: 32px; margin-right: 15px; color: #ffffff; opacity: 0.95; }
         
-        /* ❌ ডিলিট ক্রস চিহ্ন */
-        .delete-icon { display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background-color: #ff3333; color: #fff; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; font-weight: bold; cursor: pointer; line-height: 24px; text-align: center; padding: 0; z-index: 10; }
+        .mf-text-container {
+            flex-grow: 1;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         
-        /* 🛠️ কন্ট্রোল প্যানেল বক্স */
-        .admin-panel { background-color: #111; padding: 15px; border-radius: 12px; max-width: 400px; margin: 20px auto; border: 1px dashed #ffcc00; }
-        .admin-btn { background-color: #ff00ff; color: #fff; border: none; padding: 10px 15px; font-size: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin: 5px; text-transform: uppercase; }
+        .mf-file-name { font-size: 14px; font-weight: 800; margin-bottom: 2px; text-transform: uppercase; outline: none; }
+        .mf-file-size { font-size: 11px; font-weight: normal; color: #d0e3ff; outline: none; }
+        .mf-download-arrow {
+            font-size: 20px;
+            margin-left: 10px;
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        /* 🔴 ইউটিউব সাবস্ক্রাইব বাটন */
+        .yt-btn { 
+            background-color: #ff0000; 
+            color: #ffffff; 
+            display: block; 
+            text-decoration: none; 
+            text-transform: uppercase; 
+            font-size: 15px; 
+            padding: 14px; 
+            border-radius: 12px; 
+            font-weight: bold; 
+            max-width: 400px; 
+            margin: 25px auto; 
+            border: 2px solid #000000; 
+            box-shadow: 0 4px 10px rgba(255,0,0,0.3);
+        }
+        
+        .delete-icon { 
+            display: none; 
+            position: absolute; 
+            right: -12px; 
+            top: -12px; 
+            background-color: #ff3333; 
+            color: #fff; 
+            border: 2px solid #ffffff; 
+            border-radius: 50%; 
+            width: 26px; 
+            height: 26px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            line-height: 22px; 
+            text-align: center; 
+            z-index: 10; 
+        }
+        
+        .admin-panel { 
+            background-color: #111; 
+            padding: 15px; 
+            border-radius: 12px; 
+            max-width: 400px; 
+            margin: 30px auto; 
+            border: 1px dashed #ffcc00; 
+        }
+        .admin-btn { 
+            background-color: #ff00ff; 
+            color: #fff; 
+            border: none; 
+            padding: 10px 15px; 
+            font-size: 12px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin: 5px; 
+            text-transform: uppercase; 
+        }
         .save-btn { background-color: #00ffcc; color: #000; }
         .add-btn { background-color: #0088ff; color: #fff; display: none; }
-        
-        /* ⚠️ লাল সতর্কবার্তা বক্স */
-        .warning-box { border: 2px solid #ff3333; background-color: #1a0000; color: #ff3333; font-size: 14px; padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; font-family: Arial, sans-serif; text-transform: uppercase; box-shadow: 0 0 10px #ff3333; }
-        
-        .editing { border: 2px dashed #ff00ff !important; background-color: #222222 !important; color: #ffffff !important; }
+        .warning-box { 
+            border: 2px solid #ff3333; 
+            background-color: #1a0000; 
+            color: #ff3333; 
+            font-size: 13px; 
+            padding: 10px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+            font-family: Arial, sans-serif; 
+        }
+        .editing { border: 2px dashed #ff00ff !important; background: #222222 !important; }
         #imageUpload { display: none; }
     </style>
 </head>
@@ -44,70 +152,86 @@
     <div class="profile-container">
         <img class="profile-img" id="profilePic" src="https://via.placeholder.com/150/000000/ffffff?text=MR+Gaming" alt="Logo" onclick="triggerUpload()"/>
         <input type="file" id="imageUpload" accept="image/*" onchange="loadLogo(event)">
-        
         <div class="title" id="mainTitle">MR Gaming</div>
         <div class="sub" id="mainSub">YouTube Content Creator</div>
     </div>
 
+    <!-- ক্লাউড বাটন এরিয়া -->
     <div id="buttonsArea">
-        <div class="btn-wrapper">
-            <a href="https://www.mediafire.com" target="_blank" class="btn" onclick="handleBtnClick(event)"><i class="fa-solid fa-download"></i> DOWNLOAD TOURNAMENT PANEL</a>
-            <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
-        </div>
-        <div class="btn-wrapper">
-            <a href="https://www.mediafire.com" target="_blank" class="btn" onclick="handleBtnClick(event)"><i class="fa-solid fa-download"></i> DOWNLOAD SECRET PANEL</a>
-            <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
-        </div>
+        <p style="color: #888;">ফাইলগুলো লোড হচ্ছে, দয়া করে অপেক্ষা করুন...</p>
     </div>
 
-    <p style="color: #ffd700; margin-top: 30px;">FOLLOW ME</p>
-    <a href="https://youtube.com/@musa0000-n7v?si=Y7LGJjz1-jMlfT7D" target="_blank" class="yt-btn"><i class="fa-brands fa-youtube"></i> Subscribe Now YouTube</a>
+    <p style="color: #ffd700; margin-top: 35px; font-size: 14px;">FOLLOW ME</p>
+    <a href="https://youtube.com/@musa0000-n7v?si=Y7LGJjz1-jMlfT7D" target="_blank" class="yt-btn">
+        <i class="fa-brands fa-youtube"></i> Subscribe Now YouTube
+    </a>
 
     <div class="admin-panel">
-        <div class="warning-box">
-            ⚠️ এডমিন ছাড়া কেউ পাসওয়ার্ড দেওয়ার চেষ্টা করবেন না ⚠️
-        </div>
-        
-        <button class="admin-btn add-btn" id="addButton" onclick="addNewButton()">➕ Add New Button</button>
+        <div class="warning-box">⚠️ এডমিন ছাড়া কেউ পাসওয়ার্ড দেওয়ার চেষ্টা করবেন না ⚠️</div>
+        <button class="admin-btn add-btn" id="addButton" onclick="addNewButton()">➕ Add New File</button>
         <button class="admin-btn" id="editToggle" onclick="checkPasswordAndToggle()">✍️ TURN ON EDIT MODE</button>
         <button class="admin-btn save-btn" id="saveButton" onclick="saveChanges()" style="display: none;">💾 SAVE CHANGES</button>
     </div>
 
     <script>
+        // ওপি ক্লাউড ডাটাবেজ কনফিগারেশন (সবার জন্য অটো-সিঙ্ক)
+        const firebaseConfig = {
+            databaseURL: "https://mr-gaming-panel-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref("panelData");
+
         let isEditMode = false;
         let isVerified = false;
+        let currentLogoBase64 = "https://via.placeholder.com/150/000000/ffffff?text=MR+Gaming";
 
-        window.onload = function() {
-            if(localStorage.getItem('logoData')) document.getElementById('profilePic').src = localStorage.getItem('logoData');
-            if(localStorage.getItem('title')) document.getElementById('mainTitle').innerText = localStorage.getItem('title');
-            if(localStorage.getItem('sub')) document.getElementById('mainSub').innerText = localStorage.getItem('sub');
-            if(localStorage.getItem('savedButtonsHTML')) {
-                document.getElementById('buttonsArea').innerHTML = localStorage.getItem('savedButtonsHTML');
+        // ডাটাবেজ থেকে রিয়েল-টাইম ডাটা দর্শকদের ফোনে লোড করা
+        db.on("value", (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                if(!isEditMode) {
+                    document.getElementById('mainTitle').innerText = data.title || "MR Gaming";
+                    document.getElementById('mainSub').innerText = data.sub || "YouTube Content Creator";
+                    if(data.logo) {
+                        document.getElementById('profilePic').src = data.logo;
+                        currentLogoBase64 = data.logo;
+                    }
+                    
+                    const area = document.getElementById('buttonsArea');
+                    area.innerHTML = "";
+                    if(data.buttons) {
+                        data.buttons.forEach((btn, index) => {
+                            if(!btn) return;
+                            const wrapper = document.createElement('div');
+                            wrapper.className = "btn-wrapper";
+                            wrapper.innerHTML = `
+                                <a href="${btn.link}" target="_blank" class="mediafire-card" onclick="handleBtnClick(event)">
+                                    <div class="mf-file-icon"><i class="fa-solid fa-file-zipper"></i></div>
+                                    <div class="mf-text-container">
+                                        <div class="mf-file-name">${btn.name}</div>
+                                        <div class="mf-file-size">File Size: ${btn.size}</div>
+                                    </div>
+                                    <div class="mf-download-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                                </a>
+                                <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
+                            `;
+                            area.appendChild(wrapper);
+                        });
+                    } else {
+                        area.innerHTML = `<p style="color:#666;">কোনো ফাইল আপলোড করা নেই।</p>`;
+                    }
+                }
             }
-        }
+        });
 
-        // বাটন ক্লিকে ডাউনলোডের লজিক
-        function handleBtnClick(event) {
-            // যদি এডিট মোড অন থাকে, তবে লিংক ওপেন হবে না, এডিট হবে
-            if (isEditMode) {
-                event.preventDefault();
-            }
-            // এডিট মোড অফ থাকলে নরমালি লিংকে গিয়ে ডাউনলোড হবে
-        }
-
-        function triggerUpload() { 
-            if(isVerified) {
-                document.getElementById('imageUpload').click(); 
-            } else {
-                alert("❌ লোগো পরিবর্তন করতে আগে এডিট মোড অন করুন এবং পাসওয়ার্ড দিন!");
-            }
-        }
+        function handleBtnClick(event) { if (isEditMode) event.preventDefault(); }
+        function triggerUpload() { if(isVerified) document.getElementById('imageUpload').click(); else alert("❌ লোগো পরিবর্তন করতে এডিট মোড অন করুন!"); }
 
         function loadLogo(event) {
             const reader = new FileReader();
             reader.onload = function() {
                 document.getElementById('profilePic').src = reader.result;
-                localStorage.setItem('logoData', reader.result);
+                currentLogoBase64 = reader.result;
             }
             reader.readAsDataURL(event.target.files[0]);
         }
@@ -115,97 +239,101 @@
         function addNewButton() {
             if(!isVerified) return;
             const area = document.getElementById('buttonsArea');
-            let userLink = prompt("আপনার ফাইলের ডাউনলোড লিংকটি দিন:", "https://www.mediafire.com");
-            if(!userLink) userLink = "https://www.mediafire.com";
+            let userLink = prompt("মিডিয়াফায়ার ফাইলের ডাউনলোড লিংক দিন:", "https://www.mediafire.com");
+            if(!userLink) return;
+            let fileName = prompt("ফাইলের নাম লিখুন:", "NEW PANEL FILE.ZIP");
+            let fileSize = prompt("ফাইলের সাইজ লিখুন:", "15.0 MB");
 
             const wrapper = document.createElement('div');
             wrapper.className = "btn-wrapper";
             wrapper.innerHTML = `
-                <a href="${userLink}" target="_blank" class="btn" onclick="handleBtnClick(event)"><i class="fa-solid fa-download"></i> NEW DOWNLOAD BUTTON</a>
-                <button class="delete-icon" onclick="removeThisButton(this)">✖</button>
+                <a href="${userLink}" target="_blank" class="mediafire-card editing" onclick="handleBtnClick(event)">
+                    <div class="mf-file-icon"><i class="fa-solid fa-file-zipper"></i></div>
+                    <div class="mf-text-container">
+                        <div class="mf-file-name" contenteditable="true">${fileName}</div>
+                        <div class="mf-file-size" contenteditable="true">File Size: ${fileSize}</div>
+                    </div>
+                    <div class="mf-download-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                </a>
+                <button class="delete-icon" style="display:block;" onclick="removeThisButton(this)">✖</button>
             `;
             area.appendChild(wrapper);
-            
-            if(isEditMode) {
-                const btn = wrapper.querySelector('.btn');
-                const delIcon = wrapper.querySelector('.delete-icon');
-                btn.setAttribute('contenteditable', 'true');
-                btn.classList.add('editing');
-                delIcon.style.display = "block";
-            }
         }
 
-        function removeThisButton(buttonElement) {
-            if(!isVerified) return;
-            if(confirm("আপনি কি নিশ্চিত যে এই ডাউনলোড বাটনটি ডিলিট করতে চান?")) {
-                buttonElement.parentElement.remove();
-            }
-        }
+        function removeThisButton(btn) { if(confirm("ফাইলটি ডিলিট করতে চান?")) btn.parentElement.remove(); }
 
         function checkPasswordAndToggle() {
             if (!isVerified) {
-                let askPass = prompt("গোপন এডমিন পাসওয়ার্ডটি দিন:");
+                let askPass = prompt("গোপন এডমিন পাসওয়ার্ড দিন:");
                 if (askPass === "mrgaming") {
                     isVerified = true;
                     document.getElementById('addButton').style.display = "inline-block";
                     document.getElementById('saveButton').style.display = "inline-block";
                     toggleEditMode();
-                } else {
-                    alert("❌ ভুল পাসওয়ার্ড! আপনি এই সাইটের এডমিন নন।");
-                }
-            } else {
-                toggleEditMode();
-            }
+                } else { alert("❌ ভুল পাসওয়ার্ড!"); }
+            } else { toggleEditMode(); }
         }
 
         function toggleEditMode() {
             isEditMode = !isEditMode;
             const titleEl = document.getElementById('mainTitle');
             const subEl = document.getElementById('mainSub');
-            const buttons = document.querySelectorAll('#buttonsArea .btn');
-            const deleteIcons = document.querySelectorAll('#buttonsArea .delete-icon');
             const toggleBtn = document.getElementById('editToggle');
+            const cards = document.querySelectorAll('#buttonsArea .mediafire-card');
+            const fileNames = document.querySelectorAll('#buttonsArea .mf-file-name');
+            const fileSizes = document.querySelectorAll('#buttonsArea .mf-file-size');
+            const deleteIcons = document.querySelectorAll('#buttonsArea .delete-icon');
 
             if(isEditMode) {
                 toggleBtn.innerText = "🛑 STOP EDITING";
                 toggleBtn.style.backgroundColor = "#ff3333";
-                titleEl.setAttribute('contenteditable', 'true');
-                titleEl.classList.add('editing');
-                subEl.setAttribute('contenteditable', 'true');
-                subEl.classList.add('editing');
-                buttons.forEach(btn => {
-                    btn.setAttribute('contenteditable', 'true');
-                    btn.classList.add('editing');
-                });
-                deleteIcons.forEach(icon => { icon.style.display = "block"; });
+                titleEl.setAttribute('contenteditable', 'true'); titleEl.classList.add('editing');
+                subEl.setAttribute('contenteditable', 'true'); subEl.classList.add('editing');
+                cards.forEach(c => c.classList.add('editing'));
+                fileNames.forEach(n => n.setAttribute('contenteditable', 'true'));
+                fileSizes.forEach(s => s.setAttribute('contenteditable', 'true'));
+                deleteIcons.forEach(i => i.style.display = "block");
             } else {
                 toggleBtn.innerText = "✍️ TURN ON EDIT MODE";
                 toggleBtn.style.backgroundColor = "#ff00ff";
-                titleEl.setAttribute('contenteditable', 'false');
-                titleEl.classList.remove('editing');
-                subEl.setAttribute('contenteditable', 'false');
-                subEl.classList.remove('editing');
-                buttons.forEach(btn => {
-                    btn.setAttribute('contenteditable', 'false');
-                    btn.classList.remove('editing');
-                });
-                deleteIcons.forEach(icon => { icon.style.display = "none"; });
+                titleEl.setAttribute('contenteditable', 'false'); titleEl.classList.remove('editing');
+                subEl.setAttribute('contenteditable', 'false'); subEl.classList.remove('editing');
             }
         }
 
+        // মেঘের ডাটাবেজে (Cloud Database) ডেটা সেভ করা যা সাথে সাথে সকলের ফোনে আপডেট হবে
         function saveChanges() {
             if(isEditMode) toggleEditMode();
-            localStorage.setItem('title', document.getElementById('mainTitle').innerText);
-            localStorage.setItem('sub', document.getElementById('mainSub').innerText);
-            localStorage.setItem('savedButtonsHTML', document.getElementById('buttonsArea').innerHTML);
             
-            isVerified = false;
-            document.getElementById('addButton').style.display = "none";
-            document.getElementById('saveButton').style.display = "none";
+            const btnWrappers = document.querySelectorAll('#buttonsArea .btn-wrapper');
+            const buttonsData = [];
             
-            alert("✅ সবকিছু সফলভাবে সেভ এবং ডাউনলোড লিংক সচল হয়েছে!");
+            btnWrappers.forEach(wrapper => {
+                const aTag = wrapper.querySelector('.mediafire-card');
+                const name = wrapper.querySelector('.mf-file-name').innerText;
+                const size = wrapper.querySelector('.mf-file-size').innerText.replace("File Size: ", "");
+                const link = aTag.getAttribute('href');
+                buttonsData.push({ name: name, size: size, link: link });
+            });
+
+            const finalData = {
+                title: document.getElementById('mainTitle').innerText,
+                sub: document.getElementById('mainSub').innerText,
+                logo: currentLogoBase64,
+                buttons: buttonsData
+            };
+
+            db.set(finalData, (error) => {
+                if(error) {
+                    alert("❌ ডাটাবেজে সেভ হতে সমস্যা হয়েছে!");
+                } else {
+                    isVerified = false;
+                    document.getElementById('addButton').style.display = "none";
+                    document.getElementById('saveButton').style.display = "none";
+                    alert("✅ ওপি মুসা ভাই! ক্লাউড ডাটাবেজে নাম ও ফাইল সফলভাবে সেভ হয়েছে। এখন সব দর্শকরা নতুন নাম দেখতে পাবে!");
+                }
+            });
         }
     </script>
-
 </body>
 </html>
