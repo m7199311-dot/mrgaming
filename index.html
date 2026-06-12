@@ -19,206 +19,55 @@
             padding: 20px;
         }
 
-        /* কাস্টমাইজেশন প্যানেল */
-        .admin-panel {
-            display: none;
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid #ff3333;
-            border-radius: 16px;
-            padding: 25px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            margin-bottom: 20px;
-            z-index: 10;
-        }
-        .admin-panel h3 { color: #ffcc00; margin-bottom: 20px; text-align: center; font-size: 18px; text-transform: uppercase; }
-        .admin-panel label { font-size: 12px; color: #aaa; display: block; margin-bottom: 5px; }
-        .admin-panel input[type="text"], .admin-panel textarea {
-            width: 100%; padding: 12px; margin-bottom: 15px;
-            background: #12131a; border: 1px solid #444;
-            border-radius: 8px; color: #fff; font-size: 14px;
-        }
-        .admin-panel input[type="file"] { margin-bottom: 15px; font-size: 12px; color: #ffcc00; display: block; }
-        
-        .gen-btn {
-            width: 100%; background: linear-gradient(135deg, #ff3333 0%, #b30000 100%); color: white; border: none;
-            padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer;
-            transition: 0.3s; font-size: 15px; text-transform: uppercase;
-        }
-
         /* গিফট BOX এনিমেশন */
-        .gift-intro {
-            text-align: center;
-            cursor: pointer;
-        }
-        .gift-box-anim {
-            font-size: 100px;
-            animation: bounce 0.8s infinite alternate;
-            display: inline-block;
-        }
-        @keyframes bounce { 
-            from { transform: scale(1) rotate(-5deg); } 
-            to { transform: scale(1.15) rotate(5deg); } 
-        }
+        .gift-intro { text-align: center; cursor: pointer; }
+        .gift-box-anim { font-size: 100px; animation: bounce 0.8s infinite alternate; display: inline-block; }
+        @keyframes bounce { from { transform: scale(1) rotate(-5deg); } to { transform: scale(1.15) rotate(5deg); } }
 
         /* প্রধান সারপ্রাইজ কন্টেইনার */
         .wish-container {
-            display: none;
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            border: 2px solid rgba(255, 204, 0, 0.2);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            animation: popUp 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            overflow: hidden;
-            padding-bottom: 30px;
+            display: none; text-align: center; max-width: 500px; width: 100%;
+            background: rgba(255, 255, 255, 0.05); border-radius: 20px;
+            border: 2px solid rgba(255, 204, 0, 0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px); animation: popUp 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            overflow: hidden; padding-bottom: 30px;
         }
         @keyframes popUp { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
 
         /* ফেসবুক লেআউট */
-        .fb-profile-header {
-            position: relative;
-            width: 100%;
-            height: 260px;
-            margin-bottom: 20px;
-        }
-        .cover-pic-box {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #333 0%, #222 100%);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            overflow: hidden;
-        }
-        .cover-pic-box img {
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            object-position: top;
-            display: none;
-        }
-        .profile-pic-container {
-            position: absolute;
-            top: 110px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 130px;
-            height: 130px;
-        }
-        .profile-pic-container img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid #ffcc00;
-            object-fit: cover;
-            object-position: top;
-            box-shadow: 0 0 25px rgba(255, 204, 0, 0.6);
-            background: #222;
-            display: none;
-        }
+        .fb-profile-header { position: relative; width: 100%; height: 260px; margin-bottom: 20px; }
+        .cover-pic-box { width: 100%; height: 180px; background: linear-gradient(135deg, #333 0%, #222 100%); border-bottom: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
+        .cover-pic-box img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+        .profile-pic-container { position: absolute; top: 110px; left: 50%; transform: translateX(-50%); width: 130px; height: 130px; }
+        .profile-pic-container img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #ffcc00; object-fit: cover; object-position: top; box-shadow: 0 0 25px rgba(255, 204, 0, 0.6); background: #222; }
 
         /* টেক্সট এরিয়া */
         .wish-content { padding: 0 25px; }
         .hbd-title { font-size: 18px; color: #00ffcc; font-weight: bold; letter-spacing: 3px; margin-bottom: 5px; }
-        .birthday-name {
-            font-size: 34px; font-weight: 900;
-            background: linear-gradient(45deg, #ff0055, #ffcc00, #00ffcc);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-
-        .message-card {
-            background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 25px;
-            border-left: 5px solid #ff0055; border-right: 5px solid #ffcc00;
-            font-size: 16px; line-height: 1.8; text-align: justify; margin-bottom: 25px;
-        }
+        .birthday-name { font-size: 34px; font-weight: 900; background: linear-gradient(45deg, #ff0055, #ffcc00, #00ffcc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+        .message-card { background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 25px; border-left: 5px solid #ff0055; border-right: 5px solid #ffcc00; font-size: 16px; line-height: 1.8; text-align: justify; margin-bottom: 25px; white-space: pre-line; }
         .signature { text-align: right; font-style: italic; color: #00ffcc; font-weight: bold; margin-top: 15px; font-size: 16px; }
 
-        /* 📸 বড় এবং ফুল ইমেজ গ্যালারি সেকশন */
+        /* 📸 বড় এবং ফুল ইমেজ গ্যালারি */
         .gallery-title { font-size: 15px; color: #ffcc00; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px dashed #444; padding-bottom: 8px; }
-        .image-gallery { 
-            display: flex;
-            flex-direction: column;
-            gap: 20px; 
-            width: 100%; 
-        }
-        .gallery-box {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .gallery-img { 
-            width: 100%; 
-            max-height: 500px; 
-            object-fit: contain; 
-            border-radius: 8px;
-        }
+        .image-gallery { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .gallery-box { width: 100%; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.1); padding: 8px; display: flex; align-items: center; justify-content: center; }
+        .gallery-img { width: 100%; max-height: 500px; object-fit: contain; border-radius: 8px; }
 
-        /* 🌸 ফুল পড়ার ব্যাকগ্রাউন্ড অ্যানিমেশন লেয়ার (নতুন) */
-        .decorations { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            pointer-events: none; 
-            z-index: 999; /* ইমেজের উপর দিয়ে ফুল পড়ার জন্য ইনডেক্স বাড়ানো হয়েছে */
-        }
-        .flower { 
-            position: absolute; 
-            font-size: 24px;
-            user-select: none;
-            animation: dropFlowers 5s infinite linear; 
-        }
+        /* 🌸 ফুল পড়ার অ্যানিমেশন */
+        .decorations { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+        .flower { position: absolute; font-size: 24px; user-select: none; animation: dropFlowers 5s infinite linear; }
         @keyframes dropFlowers {
             0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
             90% { opacity: 1; }
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
-
-        .admin-lock-btn {
-            margin-top: 40px; background: none; border: none; color: #222;
-            font-size: 12px; cursor: pointer; transition: 0.3s; padding: 10px;
-        }
-        .admin-lock-btn:hover { color: #ff3333; }
     </style>
 </head>
 <body>
 
     <div class="decorations" id="decorations"></div>
-
-    <div class="admin-panel" id="adminPanel">
-        <h3>⚙️ MR Admin Panel</h3>
-        <label>মামার নাম:</label>
-        <input type="text" id="inputName" value="আমার প্রিয় মামা!">
-        
-        <label>১. কভার ফটো আপলোড করুন:</label>
-        <input type="file" id="coverImgFile" accept="image/*">
-
-        <label>২. গোল প্রোফাইল ছবি আপলোড করুন:</label>
-        <input type="file" id="mainImgFile" accept="image/*">
-        
-        <label>৩. গ্যালারির জন্য ছবি বাছুন (Multiple):</label>
-        <input type="file" id="galleryFiles" accept="image/*" multiple>
-        
-        <label>স্পেশাল উইশ মেসেজ:</label>
-        <textarea id="inputMsg" rows="4">শুভ জন্মদিন, আমার প্রিয় মামা! জীবনের প্রতিটি পদক্ষেপে আপনার মতো একজন মেন্টর, বন্ধু এবং গাইড পাওয়া সত্যি ভাগ্যের ব্যাপার। আমার জীবনের অন্যতম সেরা অনুপ্রেরণা আপনি। 🌟 
-
-আল্লাহর কাছে দোয়া করি, আপনার আগামী দিনগুলো যেন অনেক বেশি সাফল্য, অনাবিল আনন্দ আর সুস্বাস্থ্য দিয়ে ভরে ওঠে। সবসময় এভাবেই হাসিখুশি আর ওপি লেভেলে থাকুন মামা!</textarea>
-        
-        <button class="gen-btn" onclick="saveAndApplyData()">সবকিছু আপডেট করুন 🔥</button>
-    </div>
 
     <div class="gift-intro" id="giftIntro" onclick="openSurprise()">
         <div class="gift-box-anim">🎁</div>
@@ -232,144 +81,59 @@
         
         <div class="fb-profile-header">
             <div class="cover-pic-box">
-                <img src="" id="coverPic" alt="Cover">
+                <img src="এখানে_কভার_ছবির_লিঙ্ক_দিন" alt="Cover">
             </div>
             <div class="profile-pic-container">
-                <img src="" id="friendPic" alt="Profile">
+                <img src="এখানে_প্রোফাইল_ছবির_লিঙ্ক_দিন" alt="Profile">
             </div>
         </div>
 
         <div class="wish-content">
             <div class="hbd-title">✨ HAPPY BIRTHDAY ✨</div>
-            <div class="birthday-name" id="friendName">আমার প্রিয় মামা!</div>
+            <div class="birthday-name">আমার প্রিয় মামা!</div>
             
             <div class="message-card">
-                <span id="friendMessage"></span>
+                शुभ जन्मदिन, আমার প্রিয় মামা! জীবনের প্রতিটি পদক্ষেপে আপনার মতো একজন মেন্টর, বন্ধু এবং গাইড পাওয়া সত্যি ভাগ্যের ব্যাপার। আমার জীবনের অন্যতম সেরা অনুপ্রেরণা আপনি। 🌟 
+
+                আল্লাহর কাছে দোয়া করি, আপনার আগামী দিনগুলো যেন অনেক বেশি সাফল্য, অনাবিল আনন্দ আর সুস্বাস্থ্য দিয়ে ভরে ওঠে। সবসময় এভাবেই হাসিখুশি আর ওপি লেভেলে থাকুন মামা!
                 <div class="signature">— আপনার আদরের ভাগ্নে, Musa Khan ❤️🔥</div>
             </div>
             
-            <div id="gallerySection" style="display:none;">
-                <div class="gallery-title">📸 বার্থডে স্পেশাল মেমোরিজ</div>
-                <div class="image-gallery" id="pawnGallery"></div>
+            <div class="gallery-title">📸 বার্থডে স্পেশাল মেমোরিজ</div>
+            <div class="image-gallery">
+                
+                <div class="gallery-box">
+                    <img class="gallery-img" src="এখানে_গ্যালারির_১ম_ছবির_লিঙ্ক_দিন">
+                </div>
+                <div class="gallery-box">
+                    <img class="gallery-img" src="এখানে_গ্যালারির_২য়_ছবির_লিঙ্ক_দিন">
+                </div>
+
             </div>
         </div>
     </div>
 
-    <button class="admin-lock-btn" onclick="unlockAdminPanel()">🔒 Open Customizer Panel</button>
-
     <script>
-        let coverImgBase64 = localStorage.getItem('mama_cover_pic') || "";
-        let mainImgBase64 = localStorage.getItem('mama_main_pic') || "";
-        let galleryImagesBase64 = JSON.parse(localStorage.getItem('mama_gallery_pics')) || [];
-
-        function unlockAdminPanel() {
-            let password = prompt("মুসা ভাই, গোপন পাসওয়ার্ডটি দিন:");
-            if (password === "1234") {
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('giftIntro').style.display = 'none';
-                document.getElementById('wishContainer').style.display = 'none';
-                alert("প্যানেল সফলভাবে আনলক হয়েছে! 🔥");
-            } else if (password !== null) {
-                alert("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন মুসা ভাই।");
-            }
-        }
-
-        document.getElementById('coverImgFile').addEventListener('change', function(e) {
-            let reader = new FileReader();
-            reader.onload = function() { coverImgBase64 = reader.result; };
-            reader.readAsDataURL(e.target.files[0]);
-        });
-
-        document.getElementById('mainImgFile').addEventListener('change', function(e) {
-            let reader = new FileReader();
-            reader.onload = function() { mainImgBase64 = reader.result; };
-            reader.readAsDataURL(e.target.files[0]);
-        });
-
-        document.getElementById('galleryFiles').addEventListener('change', function(e) {
-            galleryImagesBase64 = [];
-            let files = e.target.files;
-            for(let i=0; i<files.length; i++) {
-                let reader = new FileReader();
-                reader.onload = function(event) { 
-                    galleryImagesBase64.push(event.target.result);
-                };
-                reader.readAsDataURL(files[i]);
-            }
-        });
-
-        function saveAndApplyData() {
-            const name = document.getElementById('inputName').value.trim();
-            const msg = document.getElementById('inputMsg').value.trim();
-
-            localStorage.setItem('mama_name', name);
-            localStorage.setItem('mama_msg', msg);
-            if(coverImgBase64) localStorage.setItem('mama_cover_pic', coverImgBase64);
-            if(mainImgBase64) localStorage.setItem('mama_main_pic', mainImgBase64);
-            localStorage.setItem('mama_gallery_pics', JSON.stringify(galleryImagesBase64));
-
-            alert("সবকিছু ওপি লেভেলে আপডেট হয়ে গেছে মুসা ভাই! 😍");
-            window.location.reload();
-        }
-
         function openSurprise() {
             document.getElementById('giftIntro').style.display = 'none';
             document.getElementById('wishContainer').style.display = 'block';
-            startFlowerRain(); // সারপ্রাইজ ওপেন হলেই ফুল পড়া শুরু হবে
+            startFlowerRain();
         }
 
-        // 🌸 স্ক্রিনের উপর দিয়ে রিয়েল ফুল ফেলার ওপি স্ক্রিপ্ট
         function startFlowerRain() {
             const decor = document.getElementById('decorations');
             const flowerTypes = ['🌸', '🌹', '🌷', '🌻', '🌺', '💐', '🍃'];
-            
             for(let i=0; i<50; i++) {
                 let f = document.createElement('div');
                 f.className = 'flower';
                 f.innerText = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
                 f.style.left = Math.random() * 100 + 'vw';
                 f.style.animationDelay = Math.random() * 5 + 's';
-                f.style.fontSize = (Math.random() * 15 + 15) + 'px'; // ছোট বড় মিক্সড ফুল
-                f.style.animationDuration = (Math.random() * 3 + 4) + 's'; // আলাদা আলাদা স্পিড
+                f.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                f.style.animationDuration = (Math.random() * 3 + 4) + 's';
                 decor.appendChild(f);
             }
         }
-
-        window.onload = function() {
-            let savedName = localStorage.getItem('mama_name') || "আমার প্রিয় মামা!";
-            let savedMsg = localStorage.getItem('mama_msg') || document.getElementById('inputMsg').value;
-            
-            document.getElementById('friendName').innerText = savedName;
-            document.getElementById('friendMessage').innerText = savedMsg;
-            
-            if (coverImgBase64) {
-                let cPic = document.getElementById('coverPic');
-                cPic.src = coverImgBase64;
-                cPic.style.display = 'block';
-            }
-            if (mainImgBase64) {
-                let mPic = document.getElementById('friendPic');
-                mPic.src = mainImgBase64;
-                mPic.style.display = 'block';
-            }
-
-            if (galleryImagesBase64 && galleryImagesBase64.length > 0) {
-                document.getElementById('gallerySection').style.display = 'block';
-                const galleryCont = document.getElementById('pawnGallery');
-                galleryCont.innerHTML = "";
-                galleryImagesBase64.forEach(imgData => {
-                    let box = document.createElement('div');
-                    box.className = 'gallery-box';
-                    
-                    let img = document.createElement('img');
-                    img.className = 'gallery-img';
-                    img.src = imgData;
-                    
-                    box.appendChild(img);
-                    galleryCont.appendChild(box);
-                });
-            }
-        };
     </script>
 </body>
 </html>
