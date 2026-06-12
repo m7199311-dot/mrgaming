@@ -8,7 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: radial-gradient(circle, #1a1c29 0%, #0e1017 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -19,42 +19,60 @@
             padding: 20px;
         }
 
-        /* গিফট BOX এনিমেশন */
-        .gift-intro { text-align: center; cursor: pointer; }
-        .gift-box-anim { font-size: 100px; animation: bounce 0.8s infinite alternate; display: inline-block; }
-        @keyframes bounce { from { transform: scale(1) rotate(-5deg); } to { transform: scale(1.15) rotate(5deg); } }
+        /* ⏳ ১. ওপি ওয়েলকাম লোডিং স্ক্রিন */
+        #loadingScreen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, #1e1b4b 0%, #0f172a 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10000; transition: opacity 0.8s ease;
+        }
+        .loading-box { text-align: center; padding: 20px; }
+        .loading-title {
+            font-size: 22px; font-weight: bold; margin-bottom: 25px;
+            background: linear-gradient(45deg, #38bdf8, #00ffcc, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: textGlow 2s infinite alternate; letter-spacing: 1px;
+        }
+        @keyframes textGlow { from { opacity: 0.6; } to { opacity: 1; } }
+        
+        /* মডার্ন নিয়ন সার্কেল লোডার */
+        .neon-loader {
+            width: 70px; height: 70px; border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.05);
+            border-top-color: #ff0055; border-bottom-color: #00ffcc;
+            animation: spinLoader 1.5s linear infinite;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+        }
+        @keyframes spinLoader { to { transform: rotate(360deg); } }
 
-        /* প্রধান সারপ্রাইজ কন্টেইনার */
+        /* 🎁 ২. গিফট BOX এনিমেশন (শুরুতে হাইড থাকবে) */
+        .gift-intro { display: none; text-align: center; cursor: pointer; animation: fadeIn 0.8s ease forwards; }
+        .gift-box-anim { font-size: 110px; animation: bounce 0.8s infinite alternate; display: inline-block; }
+        @keyframes bounce { from { transform: scale(1) rotate(-5deg); } to { transform: scale(1.15) rotate(5deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* 💝 ৩. প্রধান সারপ্রাইজ কার্ড ডিজাইন */
         .wish-container {
             display: none; text-align: center; max-width: 500px; width: 100%;
-            background: rgba(255, 255, 255, 0.05); border-radius: 20px;
-            border: 2px solid rgba(255, 204, 0, 0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px); animation: popUp 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            overflow: hidden; padding-bottom: 30px;
+            background: rgba(255, 255, 255, 0.07); border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px); animation: popUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            padding: 35px 25px; position: relative;
         }
-        @keyframes popUp { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+        @keyframes popUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 
-        /* ফেসবুক লেআউট */
-        .fb-profile-header { position: relative; width: 100%; height: 260px; margin-bottom: 20px; }
-        .cover-pic-box { width: 100%; height: 180px; background: linear-gradient(135deg, #333 0%, #222 100%); border-bottom: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
-        .cover-pic-box img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
-        .profile-pic-container { position: absolute; top: 110px; left: 50%; transform: translateX(-50%); width: 130px; height: 130px; }
-        .profile-pic-container img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #ffcc00; object-fit: cover; object-position: top; box-shadow: 0 0 25px rgba(255, 204, 0, 0.6); background: #222; }
+        .hbd-title { font-size: 16px; color: #38bdf8; font-weight: bold; letter-spacing: 4px; margin-bottom: 10px; text-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+        .birthday-name { font-size: 36px; font-weight: 900; background: linear-gradient(45deg, #ff0055, #f59e0b, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 25px; }
+        
+        .message-card { 
+            background: rgba(0, 0, 0, 0.4); border-radius: 18px; padding: 25px; 
+            border-top: 3px solid #ff0055; border-bottom: 3px solid #f59e0b; 
+            font-size: 16px; line-height: 1.8; text-align: justify; margin-bottom: 25px; 
+            white-space: pre-line; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+        }
+        .signature { text-align: right; font-style: italic; color: #38bdf8; font-weight: bold; margin-top: 15px; font-size: 16px; }
 
-        /* টেক্সট এরিয়া */
-        .wish-content { padding: 0 25px; }
-        .hbd-title { font-size: 18px; color: #00ffcc; font-weight: bold; letter-spacing: 3px; margin-bottom: 5px; }
-        .birthday-name { font-size: 34px; font-weight: 900; background: linear-gradient(45deg, #ff0055, #ffcc00, #00ffcc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-        .message-card { background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 25px; border-left: 5px solid #ff0055; border-right: 5px solid #ffcc00; font-size: 16px; line-height: 1.8; text-align: justify; margin-bottom: 25px; white-space: pre-line; }
-        .signature { text-align: right; font-style: italic; color: #00ffcc; font-weight: bold; margin-top: 15px; font-size: 16px; }
-
-        /* 📸 বড় ইমেজ গ্যালারি সেকশন */
-        .gallery-title { font-size: 15px; color: #ffcc00; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px dashed #444; padding-bottom: 8px; }
-        .image-gallery { display: flex; flex-direction: column; gap: 20px; width: 100%; }
-        .gallery-box { width: 100%; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.1); padding: 8px; display: flex; align-items: center; justify-content: center; }
-        .gallery-img { width: 100%; max-height: 500px; object-fit: contain; border-radius: 8px; }
-
-        /* 🌸 স্ক্রিনের ওপর দিয়ে ফুল পড়ার এনিমেশন */
+        /* 🌸 ফুল ও কণা পড়ার এনিমেশন */
         .decorations { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
         .flower { position: absolute; font-size: 24px; user-select: none; animation: dropFlowers 5s infinite linear; }
         @keyframes dropFlowers {
@@ -63,54 +81,101 @@
             90% { opacity: 1; }
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
+
+        /* ⚙️ গোপন সেটিংস আইকন */
+        .secret-settings {
+            position: absolute; bottom: 15px; right: 15px; font-size: 18px;
+            opacity: 0.15; cursor: pointer; transition: opacity 0.3s; z-index: 10;
+        }
+        .secret-settings:hover { opacity: 0.8; }
+
+        /* কাস্টমাইজ পপ-আপ প্যানেল */
+        .settings-panel {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 400px; background: #1e1e2e; border: 2px solid #ff0055;
+            border-radius: 16px; padding: 20px; z-index: 1000; box-shadow: 0 0 30px rgba(0,0,0,0.9);
+        }
+        .settings-panel h3 { margin-bottom: 15px; color: #f59e0b; font-size: 18px; }
+        .settings-panel input, .settings-panel textarea {
+            width: 100%; padding: 10px; margin-bottom: 12px; background: #2d2d3d;
+            border: 1px solid #444; color: #fff; border-radius: 8px; font-size: 14px;
+        }
+        .btn-group { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-save { background: #10b981; color: #fff; }
+        .btn-close { background: #ef4444; color: #fff; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; }
     </style>
 </head>
 <body>
+
+    <div id="loadingScreen">
+        <div class="loading-box">
+            <div class="loading-title">🎂 আপনার জন্য একটি ওপি সারপ্রাইজ লোড হচ্ছে... ✨</div>
+            <center><div class="neon-loader"></div></center>
+        </div>
+    </div>
 
     <div class="decorations" id="decorations"></div>
 
     <div class="gift-intro" id="giftIntro" onclick="openSurprise()">
         <div class="gift-box-anim">🎁</div>
-        <p style="color: #ffcc00; margin-top: 20px; font-weight: bold; font-size: 18px; line-height: 1.5;">
+        <p style="color: #f59e0b; margin-top: 20px; font-weight: bold; font-size: 18px; line-height: 1.5;">
             মুসা ভাইয়ের পক্ষ থেকে একটি ওপি সারপ্রাইজ! ❤️ <br> 
-            <span style="color: #00ffcc; font-size: 14px;">[ গিফট বক্সের ওপর টাচ করুন মামা ]</span>
+            <span style="color: #38bdf8; font-size: 14px;">[ গিফট বক্সের ওপর টাচ করুন ]</span>
         </p>
     </div>
 
     <div class="wish-container" id="wishContainer">
+        <div class="hbd-title">✨ HAPPY BIRTHDAY ✨</div>
+        <div class="birthday-name" id="displayName">আমার প্রিয় মামা!</div>
         
-        <div class="fb-profile-header">
-            <div class="cover-pic-box">
-                <img src="https://images2.imgbox.com/39/e6/M68BfOf2_o.jpg" alt="Cover">
-            </div>
-            <div class="profile-pic-container">
-                <img src="https://images2.imgbox.com/66/c6/O5R7uYk9_o.jpg" alt="Profile">
-            </div>
+        <div class="message-card">
+            <span id="displayMessage">শুভ জন্মদিন, আমার প্রিয় মামা! জীবনের প্রতিটি পদক্ষেপে আপনার মতো একজন মেন্টর, বন্ধু এবং গাইড পাওয়া সত্যি ভাগ্যের ব্যাপার। আমার জীবনের অন্যতম সেরা অনুপ্রেরণা আপনি। 🌟 
+
+            আল্লাহর কাছে দোয়া করি, আপনার আগামী দিনগুলো যেন অনেক বেশি সাফল্য, অনাবিল আনন্দ আর সুস্বাস্থ্য দিয়ে ভরে ওঠে। সবসময় এভাবেই হাসিখুশি আর ওপি লেভেলে থাকুন মামা!</span>
+            <div class="signature">— আপনার আদরের ভাগ্নে, Musa Khan ❤️🔥</div>
         </div>
 
-        <div class="wish-content">
-            <div class="hbd-title">✨ HAPPY BIRTHDAY ✨</div>
-            <div class="birthday-name">আমার প্রিয় মামা!</div>
-            
-            <div class="message-card">
-                শুভ জন্মদিন, আমার প্রিয় মামা! জীবনের প্রতিটি পদক্ষেপে আপনার মতো একজন মেন্টর, বন্ধু এবং গাইড পাওয়া সত্যি ভাগ্যের ব্যাপার। আমার জীবনের অন্যতম সেরা অনুপ্রেরণা আপনি। 🌟 
+        <div class="secret-settings" onclick="checkPassword()">⚙️</div>
+    </div>
 
-                আল্লাহর কাছে দোয়া করি, আপনার আগামী দিনগুলো যেন অনেক বেশি সাফল্য, অনাবিল আনন্দ আর সুস্বাস্থ্য দিয়ে ভরে ওঠে। সবসময় এভাবেই হাসিখুশি আর ওপি লেভেলে থাকুন মামা!
-                <div class="signature">— আপনার আদরের ভাগ্নে, Musa Khan ❤️🔥</div>
-            </div>
-            
-            <div class="gallery-title">📸 বার্থডে স্পেশাল মেমোরিজ</div>
-            <div class="image-gallery">
-                
-                <div class="gallery-box">
-                    <img class="gallery-img" src="https://images2.imgbox.com/be/07/yY7P623x_o.jpg" alt="Memory 1">
-                </div>
-
-            </div>
+    <div class="overlay" id="overlay"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <h3>🛠️ কাস্টমাইজ প্যানেল</h3>
+        <label style="font-size: 12px; color: #aaa;">মামার নাম:</label>
+        <input type="text" id="inputName" placeholder="নাম লিখুন">
+        
+        <label style="font-size: 12px; color: #aaa;">উইশ মেসেজ:</label>
+        <textarea id="inputMessage" rows="5" placeholder="উইশ মেসেজ লিখুন"></textarea>
+        
+        <div class="btn-group">
+            <button class="btn btn-close" onclick="closeSettings()">বন্ধ করুন</button>
+            <button class="btn btn-save" onclick="saveCustomData()">সেভ করুন</button>
         </div>
     </div>
 
     <script>
+        // পেজ ওপেন হওয়ার ৩.৫ সেকেন্ড পর লোডার বন্ধ হয়ে গিফট বক্স আসবে
+        window.addEventListener('DOMContentLoaded', () => {
+            // লোকাল স্টোরেজ চেক
+            if(localStorage.getItem('customName')) {
+                document.getElementById('displayName').innerText = localStorage.getItem('customName');
+            }
+            if(localStorage.getItem('customMsg')) {
+                document.getElementById('displayMessage').innerText = localStorage.getItem('customMsg');
+            }
+
+            setTimeout(() => {
+                const loader = document.getElementById('loadingScreen');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    document.getElementById('giftIntro').style.display = 'block';
+                }, 800); // অ্যানিমেশন ট্রানজিশন টাইম
+            }, 3500); // ৩.৫ সেকেন্ড লোডিং এন্ট্রি থাকবে
+        });
+
         function openSurprise() {
             document.getElementById('giftIntro').style.display = 'none';
             document.getElementById('wishContainer').style.display = 'block';
@@ -119,8 +184,8 @@
 
         function startFlowerRain() {
             const decor = document.getElementById('decorations');
-            const flowerTypes = ['🌸', '🌹', '🌷', '🌻', '🌺', '💐', '🍃'];
-            for(let i=0; i<50; i++) {
+            const flowerTypes = ['🌸', '🌹', '🌷', '🌻', '🌺', '💐', '✨', '🎉'];
+            for(let i=0; i<60; i++) {
                 let f = document.createElement('div');
                 f.className = 'flower';
                 f.innerText = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
@@ -129,6 +194,46 @@
                 f.style.fontSize = (Math.random() * 15 + 15) + 'px';
                 f.style.animationDuration = (Math.random() * 3 + 4) + 's';
                 decor.appendChild(f);
+            }
+        }
+
+        // গোপন পাসওয়ার্ড (1234)
+        function checkPassword() {
+            let password = prompt("গোপন সেটিংস ওপেন করতে পাসওয়ার্ড দিন:");
+            if (password === "1234") {
+                openSettings();
+            } else if (password !== null) {
+                alert("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।");
+            }
+        }
+
+        function openSettings() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('settingsPanel').style.display = 'block';
+            document.getElementById('inputName').value = document.getElementById('displayName').innerText;
+            document.getElementById('inputMessage').value = document.getElementById('displayMessage').innerText;
+        }
+
+        function closeSettings() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('settingsPanel').style.display = 'none';
+        }
+
+        function saveCustomData() {
+            const newName = document.getElementById('inputName').value;
+            const newMsg = document.getElementById('inputMessage').value;
+
+            if(newName && newMsg) {
+                localStorage.setItem('customName', newName);
+                localStorage.setItem('customMsg', newMsg);
+                
+                document.getElementById('displayName').innerText = newName;
+                document.getElementById('displayMessage').innerText = newMsg;
+                
+                alert("ডাটা সেভ হয়েছে মুসা ভাই! 🔥");
+                closeSettings();
+            } else {
+                alert("সবগুলো ঘর ঠিকঠাক পূরণ করুন।");
             }
         }
     </script>
