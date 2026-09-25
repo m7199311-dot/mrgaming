@@ -3,239 +3,571 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>শুভ জন্মদিন প্রিয় মামা! 🎂</title>
+    <title>পিকনিক ফান্ড ম্যানেজার (অনলাইন সিঙ্ক)</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
-            color: #fff;
-            min-height: 100vh;
+            background-color: #050505;
+            color: #ffffff;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 450px;
+            background: #0a0a0c;
+            border-radius: 18px;
+            padding: 20px;
+            border: 2px solid var(--theme-color, #a800ff);
+            box-shadow: 0 0 15px var(--theme-color, #a800ff);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .card.rgb-active {
+            animation: rgbGlow 6s linear infinite;
+        }
+
+        @keyframes rgbGlow {
+            0% { border-color: #ff0055; box-shadow: 0 0 18px #ff0055; }
+            25% { border-color: #ffee00; box-shadow: 0 0 18px #ffee00; }
+            50% { border-color: #00ffd5; box-shadow: 0 0 18px #00ffd5; }
+            75% { border-color: #7a00ff; box-shadow: 0 0 18px #7a00ff; }
+            100% { border-color: #ff0055; box-shadow: 0 0 18px #ff0055; }
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .app-title {
+            color: #ff007f;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-shadow: 0 0 8px #ff007f;
+        }
+
+        .setting-icon-btn {
+            background: #15151e;
+            border: 1px solid #00ffd5;
+            color: #00ffd5;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .grand-total {
+            background: #15151e;
+            border: 1px solid #00ffd5;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #ffee00;
+            font-size: 1.15rem;
+            font-weight: bold;
+        }
+
+        .btn-add-member {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #ff0055, #00ffd5);
+            color: #000;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .member-list {
+            list-style: none;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .member-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .member-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        .member-card {
+            background: #111118;
+            border: 1.5px solid #333;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .member-card:hover {
+            border-color: #00ffd5;
+        }
+
+        .member-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid #00ffd5;
+            background: #222;
+            display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
-            padding: 20px;
+            font-size: 1.3rem;
         }
 
-        /* ⏳ ১. ওপি ওয়েলকাম লোডিং স্ক্রিন */
-        #loadingScreen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle, #1e1b4b 0%, #0f172a 100%);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10000; transition: opacity 0.8s ease;
-        }
-        .loading-box { text-align: center; padding: 20px; }
-        .loading-title {
-            font-size: 22px; font-weight: bold; margin-bottom: 25px;
-            background: linear-gradient(45deg, #38bdf8, #00ffcc, #f59e0b);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: textGlow 2s infinite alternate; letter-spacing: 1px;
-        }
-        @keyframes textGlow { from { opacity: 0.6; } to { opacity: 1; } }
-        
-        /* মডার্ন নিয়ন সার্কেল লোডার */
-        .neon-loader {
-            width: 70px; height: 70px; border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.05);
-            border-top-color: #ff0055; border-bottom-color: #00ffcc;
-            animation: spinLoader 1.5s linear infinite;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
-        }
-        @keyframes spinLoader { to { transform: rotate(360deg); } }
-
-        /* 🎁 ২. গিফট BOX এনিমেশন (শুরুতে হাইড থাকবে) */
-        .gift-intro { display: none; text-align: center; cursor: pointer; animation: fadeIn 0.8s ease forwards; }
-        .gift-box-anim { font-size: 110px; animation: bounce 0.8s infinite alternate; display: inline-block; }
-        @keyframes bounce { from { transform: scale(1) rotate(-5deg); } to { transform: scale(1.15) rotate(5deg); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* 💝 ৩. প্রধান সারপ্রাইজ কার্ড ডিজাইন */
-        .wish-container {
-            display: none; text-align: center; max-width: 500px; width: 100%;
-            background: rgba(255, 255, 255, 0.07); border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(12px); animation: popUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            padding: 35px 25px; position: relative;
-        }
-        @keyframes popUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-
-        .hbd-title { font-size: 16px; color: #38bdf8; font-weight: bold; letter-spacing: 4px; margin-bottom: 10px; text-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
-        .birthday-name { font-size: 36px; font-weight: 900; background: linear-gradient(45deg, #ff0055, #f59e0b, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 25px; }
-        
-        .message-card { 
-            background: rgba(0, 0, 0, 0.4); border-radius: 18px; padding: 25px; 
-            border-top: 3px solid #ff0055; border-bottom: 3px solid #f59e0b; 
-            font-size: 16px; line-height: 1.8; text-align: justify; margin-bottom: 25px; 
-            white-space: pre-line; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
-        }
-        .signature { text-align: right; font-style: italic; color: #38bdf8; font-weight: bold; margin-top: 15px; font-size: 16px; }
-
-        /* 🌸 ফুল ও কণা পড়ার এনিমেশন */
-        .decorations { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
-        .flower { position: absolute; font-size: 24px; user-select: none; animation: dropFlowers 5s infinite linear; }
-        @keyframes dropFlowers {
-            0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        .member-info-name {
+            color: #00ffd5;
+            font-size: 1rem;
+            font-weight: bold;
         }
 
-        /* ⚙️ গোপন সেটিংস আইকন */
-        .secret-settings {
-            position: absolute; bottom: 15px; right: 15px; font-size: 18px;
-            opacity: 0.15; cursor: pointer; transition: opacity 0.3s; z-index: 10;
+        .member-info-total {
+            color: #ffee00;
+            font-weight: bold;
+            font-size: 1rem;
         }
-        .secret-settings:hover { opacity: 0.8; }
 
-        /* কাস্টমাইজ পপ-আপ প্যানেল */
-        .settings-panel {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90%; max-width: 400px; background: #1e1e2e; border: 2px solid #ff0055;
-            border-radius: 16px; padding: 20px; z-index: 1000; box-shadow: 0 0 30px rgba(0,0,0,0.9);
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid #ff0055;
+            color: #ff0055;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
-        .settings-panel h3 { margin-bottom: 15px; color: #f59e0b; font-size: 18px; }
-        .settings-panel input, .settings-panel textarea {
-            width: 100%; padding: 10px; margin-bottom: 12px; background: #2d2d3d;
-            border: 1px solid #444; color: #fff; border-radius: 8px; font-size: 14px;
+
+        /* ✨ RGB Animated Border for Input Fields & Blocks ✨ */
+        .setting-box {
+            background: #111118;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            position: relative;
+            border: 1.5px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 0 0 10px rgba(0, 255, 213, 0.15);
+            animation: rgbBorderGlow 8s linear infinite;
         }
-        .btn-group { display: flex; gap: 10px; justify-content: flex-end; }
-        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-save { background: #10b981; color: #fff; }
-        .btn-close { background: #ef4444; color: #fff; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; }
+
+        @keyframes rgbBorderGlow {
+            0% { border-color: #ff0055; box-shadow: 0 0 8px rgba(255, 0, 85, 0.4); }
+            33% { border-color: #00ffd5; box-shadow: 0 0 8px rgba(0, 255, 213, 0.4); }
+            66% { border-color: #ffee00; box-shadow: 0 0 8px rgba(255, 238, 0, 0.4); }
+            100% { border-color: #ff0055; box-shadow: 0 0 8px rgba(255, 0, 85, 0.4); }
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1.5px solid transparent;
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+            margin-top: 5px;
+            animation: rgbBorderGlow 8s linear infinite;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-dot {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 10px;
+            background: #00ffd5;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .history-item {
+            background: #15151e;
+            border-left: 3px solid #ff007f;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
-    <div id="loadingScreen">
-        <div class="loading-box">
-            <div class="loading-title">🎂 আপনার জন্য একটি ওপি সারপ্রাইজ লোড হচ্ছে... ✨</div>
-            <center><div class="neon-loader"></div></center>
+<div class="card" id="mainCard">
+    <div class="top-bar">
+        <div class="app-title">🌸 পিকনিক ফান্ড 🌸</div>
+        <button class="setting-icon-btn" onclick="showPage('settingsPage')">⚙ সেটিং</button>
+    </div>
+
+    <!-- হোম পেজ -->
+    <div id="homePage" class="view active">
+        <div class="grand-total" id="grandTotalDisplay">সর্বমোট জমা: ৳ ০</div>
+        <button class="btn-add-member" onclick="addNewMember()">➕ নতুন সদস্য যোগ করুন</button>
+        
+        <ul class="member-list" id="memberList">
+            <li style="text-align:center; color:#888; margin-top:20px;">ডাটা লোড হচ্ছে...</li>
+        </ul>
+    </div>
+
+    <!-- সদস্যের প্রোফাইল ও জমার পেজ -->
+    <div id="detailPage" class="view">
+        <button class="back-btn" onclick="showPage('homePage')">⬅ পেছনে যান</button>
+        
+        <div style="text-align: center; margin-bottom: 15px;">
+            <div id="detailAvatarContainer" style="display: flex; justify-content: center; margin-bottom: 8px;"></div>
+            <h3 id="currentMemberName" style="color: #00ffd5;">সদস্যের নাম</h3>
+            <div id="currentMemberTotal" style="color: #ffee00; font-weight: bold;">মোট জমা: ৳ ০</div>
+        </div>
+
+        <div class="setting-box">
+            <label style="color: #00ffd5; font-size: 0.85rem;">📸 প্রোফাইল ছবি আপডেট করুন:</label>
+            <input type="file" id="profilePicInput" accept="image/*" class="input-field" onchange="uploadProfilePic(event)">
+
+            <hr style="border: 0.5px solid #222; margin: 15px 0;">
+
+            <label style="color: #00ffd5; font-size: 0.85rem;">💰 নতুন টাকা জমা করুন:</label>
+            <input type="number" id="newAmountInput" class="input-field" placeholder="টাকার পরিমাণ লিখুন">
+            <button class="save-btn" onclick="addMoneyToMember()">[ 💾 জমা সেভ করুন ]</button>
+        </div>
+
+        <h4 style="color: #00ffd5; margin-bottom: 10px;">📋 জমার ইতিহাস (History):</h4>
+        <div id="memberHistoryList" style="max-height: 250px; overflow-y: auto;">
         </div>
     </div>
 
-    <div class="decorations" id="decorations"></div>
+    <!-- সেটিংস পেজ -->
+    <div id="settingsPage" class="view">
+        <button class="back-btn" onclick="showPage('homePage')">⬅ পেছনে যান</button>
+        <h3 style="color: #00ffd5; margin-bottom: 15px;">⚙ অ্যাপ সেটিংস</h3>
 
-    <div class="gift-intro" id="giftIntro" onclick="openSurprise()">
-        <div class="gift-box-anim">🎁</div>
-        <p style="color: #f59e0b; margin-top: 20px; font-weight: bold; font-size: 18px; line-height: 1.5;">
-            মুসা ভাইয়ের পক্ষ থেকে একটি ওপি সারপ্রাইজ! ❤️ <br> 
-            <span style="color: #38bdf8; font-size: 14px;">[ গিফট বক্সের ওপর টাচ করুন ]</span>
-        </p>
-    </div>
+        <!-- পাসওয়ার্ড পরিবর্তন করার ব্লক -->
+        <div class="setting-box">
+            <h4 style="color: #ff007f; margin-bottom: 10px;">🔒 সিকিউরিটি পাসওয়ার্ড পরিবর্তন</h4>
+            
+            <label style="color: #00ffd5; font-size: 0.8rem;">বর্তমান পাসওয়ার্ড:</label>
+            <input type="password" id="oldPassInput" class="input-field" placeholder="পুরাতন পাসওয়ার্ড">
 
-    <div class="wish-container" id="wishContainer">
-        <div class="hbd-title">✨ HAPPY BIRTHDAY ✨</div>
-        <div class="birthday-name" id="displayName">আমার প্রিয় মামা!</div>
-        
-        <div class="message-card">
-            <span id="displayMessage">শুভ জন্মদিন, আমার প্রিয় মামা! জীবনের প্রতিটি পদক্ষেপে আপনার মতো একজন মেন্টর, বন্ধু এবং গাইড পাওয়া সত্যি ভাগ্যের ব্যাপার। আমার জীবনের অন্যতম সেরা অনুপ্রেরণা আপনি। 🌟 
+            <label style="color: #00ffd5; font-size: 0.8rem; margin-top: 8px; display: block;">নতুন পাসওয়ার্ড:</label>
+            <input type="password" id="newPassInput" class="input-field" placeholder="নতুন পাসওয়ার্ড">
 
-            আল্লাহর কাছে দোয়া করি, আপনার আগামী দিনগুলো যেন অনেক বেশি সাফল্য, অনাবিল আনন্দ আর সুস্বাস্থ্য দিয়ে ভরে ওঠে। সবসময় এভাবেই হাসিখুশি আর ওপি লেভেলে থাকুন মামা!</span>
-            <div class="signature">— আপনার আদরের ভাগ্নে, Musa Khan ❤️🔥</div>
+            <button class="save-btn" onclick="changePassword()">[ 🔑 পাসওয়ার্ড আপডেট করুন ]</button>
         </div>
 
-        <div class="secret-settings" onclick="checkPassword()">⚙️</div>
-    </div>
+        <!-- থিম ও RGB লাইটিং ব্লক -->
+        <div class="setting-box">
+            <div class="setting-row">
+                <span>🌈 RGB নিওন লাইট:</span>
+                <input type="checkbox" id="rgbToggle" onchange="toggleRGB(this.checked)" style="width: 20px; height: 20px;">
+            </div>
 
-    <div class="overlay" id="overlay"></div>
-    <div class="settings-panel" id="settingsPanel">
-        <h3>🛠️ কাস্টমাইজ প্যানেল</h3>
-        <label style="font-size: 12px; color: #aaa;">মামার নাম:</label>
-        <input type="text" id="inputName" placeholder="নাম লিখুন">
-        
-        <label style="font-size: 12px; color: #aaa;">উইশ মেসেজ:</label>
-        <textarea id="inputMessage" rows="5" placeholder="উইশ মেসেজ লিখুন"></textarea>
-        
-        <div class="btn-group">
-            <button class="btn btn-close" onclick="closeSettings()">বন্ধ করুন</button>
-            <button class="btn btn-save" onclick="saveCustomData()">সেভ করুন</button>
+            <div class="setting-row" style="margin-top: 15px;">
+                <span>🎨 নির্দিষ্ট বর্ডার থিম:</span>
+                <div class="color-options">
+                    <div class="color-dot" style="background: #a800ff;" onclick="setThemeColor('#a800ff')"></div>
+                    <div class="color-dot" style="background: #00ffd5;" onclick="setThemeColor('#00ffd5')"></div>
+                    <div class="color-dot" style="background: #ff007f;" onclick="setThemeColor('#ff007f')"></div>
+                    <div class="color-dot" style="background: #ffee00;" onclick="setThemeColor('#ffee00')"></div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // পেজ ওপেন হওয়ার ৩.৫ সেকেন্ড পর লোডার বন্ধ হয়ে গিফট বক্স আসবে
-        window.addEventListener('DOMContentLoaded', () => {
-            // লোকাল স্টোরেজ চেক
-            if(localStorage.getItem('customName')) {
-                document.getElementById('displayName').innerText = localStorage.getItem('customName');
+<script>
+    let currentPass = "1234"; // ডিফল্ট পাসওয়ার্ড
+    let activeMemberId = null;
+    let membersData = {};
+
+    // Firebase কনফিগারেশন
+    const firebaseConfig = {
+        databaseURL: "https://picnic-fund-tracker-default-rtdb.firebaseio.com"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadSettings();
+        
+        // পাসওয়ার্ড ক্লাউড থেকে লোড করা
+        db.ref('app_security_pass').on('value', (snapshot) => {
+            if(snapshot.exists()) {
+                currentPass = snapshot.val();
             }
-            if(localStorage.getItem('customMsg')) {
-                document.getElementById('displayMessage').innerText = localStorage.getItem('customMsg');
-            }
-
-            setTimeout(() => {
-                const loader = document.getElementById('loadingScreen');
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    document.getElementById('giftIntro').style.display = 'block';
-                }, 800); // অ্যানিমেশন ট্রানজিশন টাইম
-            }, 3500); // ৩.৫ সেকেন্ড লোডিং এন্ট্রি থাকবে
         });
 
-        function openSurprise() {
-            document.getElementById('giftIntro').style.display = 'none';
-            document.getElementById('wishContainer').style.display = 'block';
-            startFlowerRain();
-        }
-
-        function startFlowerRain() {
-            const decor = document.getElementById('decorations');
-            const flowerTypes = ['🌸', '🌹', '🌷', '🌻', '🌺', '💐', '✨', '🎉'];
-            for(let i=0; i<60; i++) {
-                let f = document.createElement('div');
-                f.className = 'flower';
-                f.innerText = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
-                f.style.left = Math.random() * 100 + 'vw';
-                f.style.animationDelay = Math.random() * 5 + 's';
-                f.style.fontSize = (Math.random() * 15 + 15) + 'px';
-                f.style.animationDuration = (Math.random() * 3 + 4) + 's';
-                decor.appendChild(f);
+        // মেম্বারদের রিয়েলটাইম ডাটা লোড
+        db.ref('picnic_members').on('value', (snapshot) => {
+            membersData = snapshot.val() || {};
+            renderMemberList();
+            if (activeMemberId && document.getElementById('detailPage').classList.contains('active')) {
+                renderMemberDetail();
             }
+        });
+    });
+
+    function showPage(pageId) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if(pageId === 'homePage') renderMemberList();
+    }
+
+    // পাসওয়ার্ড পরিবর্তনের ফাংশন
+    function changePassword() {
+        const oldP = document.getElementById('oldPassInput').value;
+        const newP = document.getElementById('newPassInput').value.trim();
+
+        if (oldP !== currentPass) {
+            alert("বর্তমান পাসওয়ার্ডটি ভুল হয়েছে!");
+            return;
         }
 
-        // গোপন পাসওয়ার্ড (1234)
-        function checkPassword() {
-            let password = prompt("গোপন সেটিংস ওপেন করতে পাসওয়ার্ড দিন:");
-            if (password === "1234") {
-                openSettings();
-            } else if (password !== null) {
-                alert("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।");
+        if (!newP) {
+            alert("নতুন পাসওয়ার্ডটি ফাঁকা রাখা যাবে না!");
+            return;
+        }
+
+        // ক্লাউডে সেভ করা
+        db.ref('app_security_pass').set(newP).then(() => {
+            currentPass = newP;
+            document.getElementById('oldPassInput').value = '';
+            document.getElementById('newPassInput').value = '';
+            alert("পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!");
+        });
+    }
+
+    function addNewMember() {
+        const inputPass = prompt("সিকিউরিটি পাসওয়ার্ড দিন:");
+        if (inputPass !== currentPass) {
+            if(inputPass !== null) alert("ভুল পাসওয়ার্ড!");
+            return;
+        }
+
+        const name = prompt("নতুন সদস্যের নাম লিখুন:");
+        if (!name || name.trim() === "") return;
+
+        const id = "mem_" + Date.now();
+        const newMember = {
+            id: id,
+            name: name.trim(),
+            avatar: "",
+            history: []
+        };
+
+        db.ref('picnic_members/' + id).set(newMember);
+    }
+
+    function renderMemberList() {
+        const listEl = document.getElementById('memberList');
+        const grandTotalEl = document.getElementById('grandTotalDisplay');
+
+        listEl.innerHTML = '';
+        let grandTotal = 0;
+        const keys = Object.keys(membersData);
+
+        if (keys.length === 0) {
+            listEl.innerHTML = '<li style="text-align:center; color:#888; margin-top:20px;">কোনো সদস্য যোগ করা হয়নি।</li>';
+            grandTotalEl.innerText = 'সর্বমোট জমা: ৳ ০';
+            return;
+        }
+
+        keys.forEach(key => {
+            const member = membersData[key];
+            const historyArr = member.history ? Object.values(member.history) : [];
+            const memberTotal = historyArr.reduce((sum, item) => sum + item.amount, 0);
+            grandTotal += memberTotal;
+
+            const avatarHTML = member.avatar 
+                ? `<img src="${member.avatar}" class="profile-avatar">` 
+                : `<div class="profile-avatar">👤</div>`;
+
+            const li = document.createElement('li');
+            li.className = 'member-card';
+            li.onclick = () => openMemberDetail(member.id);
+            li.innerHTML = `
+                <div class="member-left">
+                    ${avatarHTML}
+                    <span class="member-info-name">${member.name}</span>
+                </div>
+                <span class="member-info-total">৳ ${memberTotal}</span>
+            `;
+            listEl.appendChild(li);
+        });
+
+        grandTotalEl.innerText = `সর্বমোট জমা: ৳ ${grandTotal}`;
+    }
+
+    function openMemberDetail(id) {
+        activeMemberId = id;
+        showPage('detailPage');
+        renderMemberDetail();
+    }
+
+    function renderMemberDetail() {
+        const member = membersData[activeMemberId];
+        if (!member) return;
+
+        document.getElementById('currentMemberName').innerText = member.name;
+        
+        const avatarContainer = document.getElementById('detailAvatarContainer');
+        avatarContainer.innerHTML = member.avatar 
+            ? `<img src="${member.avatar}" class="profile-avatar" style="width:70px; height:70px;">` 
+            : `<div class="profile-avatar" style="width:70px; height:70px; font-size:2rem;">👤</div>`;
+
+        const historyArr = member.history ? Object.values(member.history) : [];
+        const total = historyArr.reduce((sum, item) => sum + item.amount, 0);
+        document.getElementById('currentMemberTotal').innerText = `মোট জমা: ৳ ${total}`;
+
+        const historyListEl = document.getElementById('memberHistoryList');
+        historyListEl.innerHTML = '';
+
+        if (historyArr.length === 0) {
+            historyListEl.innerHTML = '<div style="text-align:center; color:#777;">এখনো কোনো জমা নেই।</div>';
+            return;
+        }
+
+        historyArr.slice().reverse().forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `
+                <div>
+                    <div style="color: #fff; font-weight: bold;">+ ৳ ${item.amount}</div>
+                    <div style="font-size: 0.75rem; color: #888;">📅 ${item.dateTime}</div>
+                </div>
+            `;
+            historyListEl.appendChild(div);
+        });
+    }
+
+    function uploadProfilePic(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64Image = e.target.result;
+            if(activeMemberId) {
+                db.ref('picnic_members/' + activeMemberId + '/avatar').set(base64Image);
             }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function addMoneyToMember() {
+        const amountInput = document.getElementById('newAmountInput');
+        const amount = parseFloat(amountInput.value);
+
+        if (isNaN(amount) || amount <= 0) {
+            alert("সঠিক টাকার পরিমাণ লিখুন!");
+            return;
         }
 
-        function openSettings() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('settingsPanel').style.display = 'block';
-            document.getElementById('inputName').value = document.getElementById('displayName').innerText;
-            document.getElementById('inputMessage').value = document.getElementById('displayMessage').innerText;
-        }
+        if (activeMemberId) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
 
-        function closeSettings() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('settingsPanel').style.display = 'none';
-        }
+            const newHistory = {
+                id: Date.now(),
+                amount: amount,
+                dateTime: `${dateStr} | ${timeStr}`
+            };
 
-        function saveCustomData() {
-            const newName = document.getElementById('inputName').value;
-            const newMsg = document.getElementById('inputMessage').value;
-
-            if(newName && newMsg) {
-                localStorage.setItem('customName', newName);
-                localStorage.setItem('customMsg', newMsg);
-                
-                document.getElementById('displayName').innerText = newName;
-                document.getElementById('displayMessage').innerText = newMsg;
-                
-                alert("ডাটা সেভ হয়েছে মুসা ভাই! 🔥");
-                closeSettings();
-            } else {
-                alert("সবগুলো ঘর ঠিকঠাক পূরণ করুন।");
-            }
+            db.ref('picnic_members/' + activeMemberId + '/history').push(newHistory);
+            amountInput.value = '';
         }
-    </script>
+    }
+
+    function toggleRGB(enabled) {
+        const card = document.getElementById('mainCard');
+        if(enabled) {
+            card.classList.add('rgb-active');
+        } else {
+            card.classList.remove('rgb-active');
+        }
+        localStorage.setItem('picnic_rgb', enabled);
+    }
+
+    function setThemeColor(color) {
+        document.documentElement.style.setProperty('--theme-color', color);
+        localStorage.setItem('picnic_theme', color);
+    }
+
+    function loadSettings() {
+        const isRgb = JSON.parse(localStorage.getItem('picnic_rgb')) || false;
+        const savedTheme = localStorage.getItem('picnic_theme') || '#a800ff';
+        
+        document.getElementById('rgbToggle').checked = isRgb;
+        toggleRGB(isRgb);
+        setThemeColor(savedTheme);
+    }
+</script>
+
 </body>
 </html>
